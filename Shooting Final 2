@@ -1,0 +1,48 @@
+#Shooting Method(BVP)
+#Lengendre diff eqn
+import matplotlib.pyplot as plt
+import numpy as np
+def f(x,y,z,l):
+	return (2*z*x-(l*(l+1))*y)/(1-x**2)
+def D(xi,xf,y,z,n,l):
+	xx,yy=[],[]
+	h=(xf-xi)/(n-1)
+	for i in range(n):
+		x=xi+i*h
+		xx.append(x)
+		ya=y
+		y=y+h*z
+		z=z+h*f(x,ya,z,l)
+		yy.append(y)
+	return xx,yy
+l=4
+xi=-0.9999
+xf=0.9999
+z1,z2=0.1,0.3
+yi=1
+yf=1
+n=2000
+x1,w1=D(xi,xf,yi,z1,n,l)
+x2,w2=D(xi,xf,yi,z2,n,l)
+
+e=0.00001
+while abs(w2[-1]-w1[-1])>e:
+	z3=z2+(z2-z1)*(yf-w2[-1])/(w2[-1]-w1[-1])
+	t1,t2=D(xi,xf,yi,z3,n,l)
+	w1[-1]=w2[-1]
+	w2[-1]=t2[-1]
+	z1=z2
+	z2=z3
+x,y=D(xi,xf,yi,z3,n,l)
+plt.plot(x,y,label="Numerical soln")
+Xo=np.linspace(-1,1,100)
+#Yo=0.5*(5*Xo**3-3*Xo)
+Yo=(1/8)*(35*Xo**4-30*Xo**2+3)
+plt.plot(Xo,Yo,'ro',label="Actual solution")
+plt.axhline()
+plt.axvline()
+plt.title("Legendre Polynomial",size=20)
+plt.xlabel("X------>",size=20)
+plt.ylabel("Y------->",size=20)
+plt.legend()
+plt.show()
